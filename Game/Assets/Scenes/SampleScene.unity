@@ -276,7 +276,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.254717, g: 0.254717, b: 0.254717, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -291,7 +291,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4.0017214
+  orthographic size: 2.1546419
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -598,10 +598,11 @@ MonoBehaviour:
   WallPrefab: {fileID: 1253314593}
   FloorPrefab: {fileID: 442192786}
   RoomGroup: {fileID: 21327582}
-  NumRooms: 10
+  NumRooms: 30
   StartCoordinate: {x: 0, y: 0}
-  MaxRoomWidth: 10
-  MaxRoomHeight: 10
+  MaxRoomWidth: 20
+  MaxRoomHeight: 20
+  linear: 0
 --- !u!4 &1952949847
 Transform:
   m_ObjectHideFlags: 0

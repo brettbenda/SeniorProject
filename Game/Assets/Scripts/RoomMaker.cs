@@ -1,8 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoomMaker : MonoBehaviour {
+
+
+public class RoomMaker : MonoBehaviour
+{
     public GameObject WallPrefab;
     public GameObject FloorPrefab;
     public GameObject RoomGroup;
@@ -10,84 +14,115 @@ public class RoomMaker : MonoBehaviour {
     public Vector2 StartCoordinate;
     public int MaxRoomWidth;
     public int MaxRoomHeight;
+    public Boolean linear;
 
     // Use this for initialization
     void Start()
     {
-        int StartX = 0;
-        int StartY = 0;
-        for(int i = 0; i < NumRooms; i++)
-        {
-            GameObject Room = new GameObject();
-            Room.AddComponent<Room>();
+        CreateRooms();
 
-            int Width = Random.Range(5, MaxRoomWidth);
-            int Height = Random.Range(5, MaxRoomHeight);
-            Room.GetComponent<Room>().Initialize(i, Width, Height, StartX, StartY, WallPrefab, FloorPrefab);
-            Room.transform.parent = RoomGroup.transform;
+        CreateCorridors();
 
-            if (Random.Range(0, 100) < 50)
-                StartX += (int)Random.Range(MaxRoomWidth/2, 2 * MaxRoomWidth);
-            else
-                StartY += (int)Random.Range(MaxRoomHeight/2, 2 * MaxRoomHeight);
-        }
-
-        Room[] Rooms = RoomGroup.GetComponentsInChildren<Room>();
-        for (int i = 0; i < NumRooms; i++)
-        {
-            for (int j = i+1; j < NumRooms; j++)
-            {
-                RemoveOverlappingFloors(Rooms[i],Rooms[j]);
-            }
-            for(int j = 0; j < NumRooms; j++)
-            {
-                if(i!=j)
-                    RemoveOverlappingWalls(Rooms[i], Rooms[j]);
-            }
-        }
-
+        RemoveOverlap();
 
         Destroy(WallPrefab);
         Destroy(FloorPrefab);
 
     }
 
-    void RemoveOverlappingFloors(Room One, Room Two)
+    private void RemoveOverlap()
     {
-        GameObject[] one_floors = One.GetFloors();
-        GameObject[] one_walls = One.GetWalls();
+        Room[] Rooms = RoomGroup.GetComponentsInChildren<Room>();
+        Debug.Log(Rooms.Length);
+        List<GameObject> tiles = new List<GameObject>();
+        List<GameObject> walls = new List<GameObject>();
 
-        GameObject[] two_floors = Two.GetFloors();
-        GameObject[] two_walls = Two.GetWalls();
+        Debug.Log(RoomGroup.transform.childCount);
 
-        foreach (GameObject o1 in one_floors)
+        //collect all walls/floors
+        for (int i = 0; i < RoomGroup.transform.childCount; i++)
         {
-            foreach (GameObject o2 in two_floors)
+            GameObject[] floors = Rooms[i].GetFloors();
+            GameObject[] walls2 = Rooms[i].GetWalls();
+            foreach (GameObject o in floors)
             {
-                if (Vector2.Distance(o1.transform.position, o2.transform.position) == 0)
+                tiles.Add(o);
+            }
+            foreach (GameObject o in walls2)
+            {
+                walls.Add(o);
+            }
+        }
+
+        //remove overlap
+        foreach (GameObject o1 in walls)
+        {
+            foreach (GameObject o2 in tiles)
+            {
+                if (Vector2.Distance(o1.transform.position, o2.transform.position) < 0.5f)
                 {
-                    Destroy(o2);
+                    Debug.Log("Destroyed");
+                    Destroy(o1);
+                    break;
                 }
             }
         }
+        foreach (GameObject o in tiles)
+        {
+            o.transform.position = new Vector3( o.transform.position.x, o.transform.position.y, 1);
+        }
     }
 
-    void RemoveOverlappingWalls(Room One, Room Too)
+    private void CreateRooms()
     {
-        GameObject[] one_floors = One.GetFloors();
-        GameObject[] one_walls = One.GetWalls();
+        int StartX = 0;
+        int StartY = 0;
 
-        GameObject[] two_floors = Too.GetFloors();
-        GameObject[] two_walls = Too.GetWalls();
-        foreach (GameObject o1 in one_walls)
+        //generate "real" rooms
+        for (int i = 0; i < NumRooms; i++)
         {
-            foreach (GameObject o2 in two_floors)
+            GameObject Room = new GameObject();
+            Room.AddComponent<Room>();
+
+            int Width = UnityEngine.Random.Range(5, MaxRoomWidth);
+            int Height = UnityEngine.Random.Range(5, MaxRoomHeight);
+            Room.GetComponent<Room>().Initialize(i, Width, Height, StartX, StartY, WallPrefab, FloorPrefab);
+            Room.transform.parent = RoomGroup.transform;
+
+            if (linear)
             {
-                if (Vector2.Distance(o1.transform.position, o2.transform.position) == 0)
-                {
-                    Destroy(o1);
-                }
+                if (UnityEngine.Random.Range(0, 100) < 50)
+                    StartX += (int)UnityEngine.Random.Range(0, 2 * MaxRoomWidth);
+                else
+                    StartY += (int)UnityEngine.Random.Range(0, 2 * MaxRoomHeight);
             }
+            else
+            {
+                if (UnityEngine.Random.Range(0, 100) < 50)
+                    StartX += (int)UnityEngine.Random.Range(-2 * MaxRoomWidth, 2 * MaxRoomWidth);
+                else
+                    StartY += (int)UnityEngine.Random.Range(-2 * MaxRoomHeight, 2 * MaxRoomHeight);
+            }
+
+        }
+    }
+
+    private void CreateCorridors()
+    {
+        //generate "corridor" rooms;
+        Room[] Rooms = RoomGroup.GetComponentsInChildren<Room>();
+        for (int i = 0; i < NumRooms - 1; i++)
+        {
+            GameObject Room = new GameObject();
+            Room.AddComponent<Room>();
+
+            int X = (Rooms[i].Xcenter + Rooms[i + 1].Xcenter) / 2;
+            int Y = (Rooms[i].Ycenter + Rooms[i + 1].Ycenter) / 2;
+            int Width = Math.Max(3, Math.Abs(Rooms[i].Xcenter - Rooms[i + 1].Xcenter));
+            int Height = Math.Max(3, Math.Abs(Rooms[i].Ycenter - Rooms[i + 1].Ycenter));
+
+            Room.GetComponent<Room>().Initialize(100 + i, Width, Height, X, Y, WallPrefab, FloorPrefab);
+            Room.transform.parent = RoomGroup.transform;
         }
     }
 }
