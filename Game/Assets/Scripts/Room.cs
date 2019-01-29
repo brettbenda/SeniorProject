@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Room : MonoBehaviour {
 
-    public int Width, Height, Xcenter, Ycenter, ID;
+    public int Width, Height, Xcenter, Ycenter;
+    public string ID;
     private GameObject FloorPrefab, WallPrefab;
     private GameObject Walls, Floors;
-    
+    private List<GameObject> WallList;
+    private List<GameObject> FloorList;
+   
 	// Use this for initialization
 	void Start () {
 		
@@ -18,7 +21,7 @@ public class Room : MonoBehaviour {
 		
 	}
 
-    public void Initialize(int ID, int Width, int Height, int Xcenter, int YCenter, GameObject WallPrefab, GameObject FloorPrefab)
+    public void Initialize(string ID, int Width, int Height, int Xcenter, int YCenter, GameObject WallPrefab, GameObject FloorPrefab)
     {
         this.ID = ID;
         this.Width = Width;
@@ -28,7 +31,7 @@ public class Room : MonoBehaviour {
         this.WallPrefab = WallPrefab;
         this.FloorPrefab = FloorPrefab;
 
-        this.name = "R" + ID;
+        this.name = ID;
 
         this.transform.position = new Vector3(Xcenter, YCenter, 0);
 
@@ -36,6 +39,9 @@ public class Room : MonoBehaviour {
         Walls.transform.parent = this.transform;
         Floors = new GameObject("Floors");
         Floors.transform.parent = this.transform;
+
+        WallList = new List<GameObject>();
+        FloorList = new List<GameObject>();
 
         Construct();
     }
@@ -55,11 +61,13 @@ public class Room : MonoBehaviour {
                 {
                     Tile = Instantiate(WallPrefab, new Vector3(x, y, 0), Quaternion.identity);
                     Tile.transform.parent = Walls.transform;
+                    WallList.Add(Tile);
                 }
                 else
                 {
                     Tile = Instantiate(FloorPrefab, new Vector3(x, y, 0), Quaternion.identity);
                     Tile.transform.parent = Floors.transform;
+                    FloorList.Add(Tile);
                 }
             }
         }
@@ -71,19 +79,13 @@ public class Room : MonoBehaviour {
         Tile.transform.parent = Floors.transform;
     }
 
-    public GameObject[] GetFloors()
+    public List<GameObject> GetFloors()
     {
-        GameObject[] ReturnArray = new GameObject[Floors.transform.childCount];
-        for (int i = 0; i < Floors.transform.childCount; i++)
-            ReturnArray[i] = Floors.transform.GetChild(i).gameObject;
-        return ReturnArray;
+        return FloorList;
     }
 
-    public GameObject[] GetWalls()
+    public List<GameObject> GetWalls()
     {
-        GameObject[] ReturnArray= new GameObject[Walls.transform.childCount];
-        for (int i = 0; i < Walls.transform.childCount; i++)
-            ReturnArray[i] = Walls.transform.GetChild(i).gameObject;
-        return ReturnArray;
+        return WallList;
     }
 }
