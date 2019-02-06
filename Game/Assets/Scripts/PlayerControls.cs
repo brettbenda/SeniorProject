@@ -5,7 +5,10 @@ using UnityEngine;
 public class PlayerControls : MonoBehaviour {
     private Rigidbody2D rb;
     private Vector2 left, right, up, down, zero;
+    private Vector2 facing;
     private bool active;
+    private Weapon weapon;
+
     public float speed;
 	// Use this for initialization
 	void Start () {
@@ -16,6 +19,8 @@ public class PlayerControls : MonoBehaviour {
         down =  new Vector2(0, -speed);
         zero =  new Vector2(0, 0);
         active = true;
+        weapon = this.gameObject.AddComponent<Weapon>();
+        weapon.SetPlayer(this.gameObject);
 	}
 	
 	// Update is called once per frame
@@ -30,11 +35,18 @@ public class PlayerControls : MonoBehaviour {
             if (Input.GetKey("s"))
                 rb.velocity += down;
             if (Input.GetKey("d"))
-                rb.velocity += right;    
+                rb.velocity += right;
+
+            if(Input.anyKeyDown && rb.velocity!=zero)
+                facing = rb.velocity.normalized;
         }
+
+        Debug.DrawRay(this.transform.position, facing);
     }
 
     public void Toggle(){ active = !active; }
 
     public bool IsActive() { return active; }
+
+    public Vector2 GetFacingDir() { return facing; }
 }
