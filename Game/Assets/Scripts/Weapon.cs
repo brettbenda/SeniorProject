@@ -9,9 +9,7 @@ public class Weapon : MonoBehaviour
     public float size;
     List<GameObject> bullets;
     private GameObject owner;
-    private Sprite sprite;
     private float time;
-    private bool playerOwned;
 
     // Start is called before the first frame update
     void Awake()
@@ -19,35 +17,64 @@ public class Weapon : MonoBehaviour
         rate = .5f;
         size = 0.1f;
         bullets = new List<GameObject>();
-        sprite = Resources.Load<Sprite>("Bullet");
+        HitManager man = GameObject.Find("HitManager").GetComponent<HitManager>();
+        man.AddWeapon(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey("space") && playerOwned)
+        time += Time.deltaTime;
+        foreach(GameObject b in bullets.ToArray())
         {
-            if (time > 1.0f / rate)
+            if(b.GetComponent<Bullet>().GetAge() > 1.0f)
             {
-                Debug.Log("Weapon Active");
-                SingleStream();
-                time = 0;
+                Destroy(b);
+                bullets.Remove(b);
             }
         }
-        time += Time.deltaTime;
     }
 
-    public void SetPlayer(GameObject player) {
-        this.owner = player;
-        this.playerOwned = true;
+    //Is called to active the weapon
+    public void Shoot()
+    {
+        if (time > 1.0f / rate)
+        {
+            Debug.Log("Weapon Active");
+            SingleStream();
+            time = 0;
+        }
     }
 
+    //Sets Owner of the weapon
+    public void SetOwner(GameObject owner) {
+        this.owner = owner;
+    }
+
+    //Gets the weapon's owner
+    public GameObject GetOwner() { return owner; }
+
+    //Bullets in a single stream, sources at the owner
     public void SingleStream()
     {
-        Vector2 tragectory = owner.GetComponent<PlayerControls>().GetFacingDir();
+        GameObject bullet = new GameObject("Bullet");
+        Bullet b = bullet.AddComponent<Bullet>();
+
+        Vector2 tragectory;
+        if (owner.GetComponent<PlayerControls>() == null)
+            tragectory = owner.GetComponent<Rigidbody2D>().velocity;
+        else
+            tragectory = owner.GetComponent<PlayerControls>().GetFacingDir();
+
         float offset = owner.transform.localScale.x;
-        Bullet b = new Bullet(owner, tragectory, size, offset);
-        bullets.Add(b.GetObj());
+        b.Set(owner, tragectory, size, offset);
+
+        bullets.Add(bullet);
     }
 
+
+    public List<GameObject> GetBullets()
+    { 
+        return bullets;
+    }
 }

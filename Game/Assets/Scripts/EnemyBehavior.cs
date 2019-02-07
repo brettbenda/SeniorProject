@@ -6,16 +6,23 @@ public class EnemyBehavior : MonoBehaviour
 {
     public GameObject Target;
     private Rigidbody2D rb;
+    private Weapon weapon;
     // Start is called before the first frame update
     void Start()
     {
         rb = this.GetComponent<Rigidbody2D>();
+        HitManager man = GameObject.Find("HitManager").GetComponent<HitManager>();
+        man.AddEnemy(this.gameObject);
+
+        weapon = this.gameObject.AddComponent<Weapon>();
+        weapon.SetOwner(this.gameObject);
     }
 
     // Update is called once per frame
     void Update()
     {
         Chase();
+        this.weapon.Shoot();
     }
 
     void Chase()

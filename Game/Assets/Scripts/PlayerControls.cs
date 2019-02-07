@@ -20,8 +20,10 @@ public class PlayerControls : MonoBehaviour {
         zero =  new Vector2(0, 0);
         active = true;
         weapon = this.gameObject.AddComponent<Weapon>();
-        weapon.SetPlayer(this.gameObject);
-	}
+        weapon.SetOwner(this.gameObject);
+        HitManager man = UnityEngine.GameObject.Find("HitManager").GetComponent<HitManager>();
+        man.SetPlayer(this.gameObject);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -39,6 +41,11 @@ public class PlayerControls : MonoBehaviour {
 
             if(Input.anyKeyDown && rb.velocity!=zero)
                 facing = rb.velocity.normalized;
+
+            if (Input.GetKey("space"))
+            {
+                weapon.Shoot();
+            }
         }
 
         Debug.DrawRay(this.transform.position, facing);

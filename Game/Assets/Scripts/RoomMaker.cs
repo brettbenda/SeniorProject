@@ -7,16 +7,16 @@ using UnityEngine;
 
 public class RoomMaker : MonoBehaviour
 {
-    public GameObject WallPrefab;
-    public GameObject FloorPrefab;
-    public GameObject RoomGroup;
+    public UnityEngine.GameObject WallPrefab;
+    public UnityEngine.GameObject FloorPrefab;
+    public UnityEngine.GameObject RoomGroup;
     public int NumRooms;
     public int MaxRoomWidth;
     public int MaxRoomHeight;
     public Boolean linear;
-    public GameObject Player;
-    private List<GameObject> tiles;
-    private List<GameObject> walls;
+    public UnityEngine.GameObject Player;
+    private List<UnityEngine.GameObject> tiles;
+    private List<UnityEngine.GameObject> walls;
     private List<Room> rooms;
     private EndTile end;
 
@@ -63,16 +63,16 @@ public class RoomMaker : MonoBehaviour
 
     private void DestroyMap()
     {
-        foreach(GameObject o in tiles)
+        foreach(UnityEngine.GameObject o in tiles)
         {
             Destroy(o);
         }
-        foreach (GameObject o in walls)
+        foreach (UnityEngine.GameObject o in walls)
         {
             Destroy(o);
         }
         Destroy(RoomGroup);
-        RoomGroup = new GameObject("Rooms");
+        RoomGroup = new UnityEngine.GameObject("Rooms");
     }
 
 
@@ -100,19 +100,19 @@ public class RoomMaker : MonoBehaviour
         }
 
 
-        GameObject BestStart = null ;
-        GameObject BestEnd = null;
+        UnityEngine.GameObject BestStart = null ;
+        UnityEngine.GameObject BestEnd = null;
 
-        List<GameObject> R1Tiles = BestStartRoom.GetFloors();
-        List<GameObject> R2Tiles = BestEndRoom.GetFloors();
+        List<UnityEngine.GameObject> R1Tiles = BestStartRoom.GetFloors();
+        List<UnityEngine.GameObject> R2Tiles = BestEndRoom.GetFloors();
         LongestDistance = 0;
 
         for (int i = 0; i<R1Tiles.Count; i++)
         {
-            GameObject o = R1Tiles[i];
+            UnityEngine.GameObject o = R1Tiles[i];
             for (int j = 0; j < R2Tiles.Count; j++)
             {
-                GameObject o2 = R2Tiles[j];
+                UnityEngine.GameObject o2 = R2Tiles[j];
                 float dist = Vector2.Distance(o.transform.position, o2.transform.position);
                 if (dist > LongestDistance)
                 {
@@ -138,28 +138,28 @@ public class RoomMaker : MonoBehaviour
     {
         Room[] Rooms = RoomGroup.GetComponentsInChildren<Room>();
         Debug.Log(Rooms.Length);
-        tiles = new List<GameObject>();
-        walls = new List<GameObject>();
+        tiles = new List<UnityEngine.GameObject>();
+        walls = new List<UnityEngine.GameObject>();
 
         //collect all walls/floors
         for (int i = 0; i < RoomGroup.transform.childCount; i++)
         {
-            List<GameObject> floors = Rooms[i].GetFloors();
-            List<GameObject> walls2 = Rooms[i].GetWalls();
-            foreach (GameObject o in floors)
+            List<UnityEngine.GameObject> floors = Rooms[i].GetFloors();
+            List<UnityEngine.GameObject> walls2 = Rooms[i].GetWalls();
+            foreach (UnityEngine.GameObject o in floors)
             {
                 tiles.Add(o);
             }
-            foreach (GameObject o in walls2)
+            foreach (UnityEngine.GameObject o in walls2)
             {
                 walls.Add(o);
             }
         }
 
         //remove overlap
-        foreach (GameObject o1 in walls)
+        foreach (UnityEngine.GameObject o1 in walls)
         {
-            foreach (GameObject o2 in tiles)
+            foreach (UnityEngine.GameObject o2 in tiles)
             {
                 if (Vector2.Distance(o1.transform.position, o2.transform.position) < 0.5f)
                 {
@@ -168,7 +168,7 @@ public class RoomMaker : MonoBehaviour
                 }
             }
         }
-        foreach (GameObject o in tiles)
+        foreach (UnityEngine.GameObject o in tiles)
         {
             o.transform.position = new Vector3( o.transform.position.x, o.transform.position.y, 1);
         }
@@ -182,7 +182,7 @@ public class RoomMaker : MonoBehaviour
         //generate "real" rooms
         for (int i = 0; i < NumRooms; i++)
         {
-            GameObject Room = new GameObject();
+            UnityEngine.GameObject Room = new UnityEngine.GameObject();
             Room r = Room.AddComponent<Room>();
             rooms = new List<Room>();
             rooms.Add(r);
@@ -215,7 +215,7 @@ public class RoomMaker : MonoBehaviour
         Room[] Rooms = RoomGroup.GetComponentsInChildren<Room>();
         for (int i = 0; i < NumRooms - 1; i++)
         {
-            GameObject Room = new GameObject();
+            UnityEngine.GameObject Room = new UnityEngine.GameObject();
             Room.AddComponent<Room>();
 
             int X = (Rooms[i].Xcenter + Rooms[i + 1].Xcenter) / 2;
