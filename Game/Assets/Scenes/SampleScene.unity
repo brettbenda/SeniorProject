@@ -509,6 +509,7 @@ GameObject:
   - component: {fileID: 1287927091}
   - component: {fileID: 1287927090}
   - component: {fileID: 1287927092}
+  - component: {fileID: 1287927093}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -637,7 +638,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb4f376844cf6ec40951b08d8d027b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MaxHealth: 0
+  CurrentHealth: 0
   speed: 3
+--- !u!114 &1287927093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287927087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f7d7344abf347549be0c892593b205d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1617729995
 GameObject:
   m_ObjectHideFlags: 0
@@ -671,6 +686,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Target: {fileID: 1287927087}
+  targeting: 0
+  targetingRange: 0
+  MaxHealth: 0
+  CurrentHealth: 0
 --- !u!50 &1617729997
 Rigidbody2D:
   serializedVersion: 4

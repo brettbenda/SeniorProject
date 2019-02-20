@@ -21,17 +21,21 @@ public class HitManager : MonoBehaviour
         {
             foreach(GameObject b in w.GetBullets().ToArray())
             {
+                //Ignore self damage
                 if (PlayerHit(b) && w.GetOwner()!= player)
                 {
                     Debug.Log("Player hit");
+                    player.GetComponent<PlayerControls>().Hit(b.GetComponent<Bullet>());
                     w.GetBullets().Remove(b);
                     Destroy(b);
                 }
                 foreach(GameObject e in enemies)
                 {
+                    //ignore self damage
                     if (EnemyHit(e, b) && w.GetOwner() != e)
                     {
                         Debug.Log("Enemy hit");
+                        e.GetComponent<EnemyBehavior>().Hit(b.GetComponent<Bullet>());
                         w.GetBullets().Remove(b);
                         Destroy(b);
                     }
@@ -40,6 +44,7 @@ public class HitManager : MonoBehaviour
         }
     }
 
+    //Determines if a buller hits the player
     bool PlayerHit(GameObject bullet)
     {
         //bullet hits player
@@ -50,6 +55,7 @@ public class HitManager : MonoBehaviour
         return false;
     }
 
+    //Determines if a bullet hits the given enemy
     bool EnemyHit(GameObject enemy, GameObject bullet)
     {
         if (bullet.GetComponent<CircleCollider2D>().bounds.Intersects(enemy.GetComponent<BoxCollider2D>().bounds))

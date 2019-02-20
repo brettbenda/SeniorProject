@@ -7,18 +7,35 @@ public class Weapon : MonoBehaviour
 {
     public float rate;
     public float size;
+    public float speed;
+    public int n;
+    public float theta;
+    public float maxBulletAge;
     List<GameObject> bullets;
-    private GameObject owner;
     private float time;
 
     // Start is called before the first frame update
     void Awake()
     {
-        rate = .5f;
-        size = 0.1f;
+        rate = 2.0f;
+        size = 0.3f;
+        speed = 4.0f;
+        n = 1;
+        theta = 0;
+        maxBulletAge = 3.0f;
         bullets = new List<GameObject>();
         HitManager man = GameObject.Find("HitManager").GetComponent<HitManager>();
         man.AddWeapon(this);
+    }
+
+    void Set(float rate, float size, float speed, int n, float theta, float maxBulletAge)
+    {
+        this.rate = rate;
+        this.size = size;
+        this.speed = speed;
+        this.n = n;
+        this.theta = theta;
+        this.maxBulletAge = maxBulletAge;
     }
 
     // Update is called once per frame
@@ -27,7 +44,7 @@ public class Weapon : MonoBehaviour
         time += Time.deltaTime;
         foreach(GameObject b in bullets.ToArray())
         {
-            if(b.GetComponent<Bullet>().GetAge() > 1.0f)
+            if(b.GetComponent<Bullet>().GetAge() > maxBulletAge)
             {
                 Destroy(b);
                 bullets.Remove(b);
@@ -41,18 +58,13 @@ public class Weapon : MonoBehaviour
         if (time > 1.0f / rate)
         {
             Debug.Log("Weapon Active");
-            SingleStream();
+            NStream(n,theta);
             time = 0;
         }
     }
 
-    //Sets Owner of the weapon
-    public void SetOwner(GameObject owner) {
-        this.owner = owner;
-    }
-
     //Gets the weapon's owner
-    public GameObject GetOwner() { return owner; }
+    public GameObject GetOwner() { return gameObject; }
 
     //Bullets in a single stream, sources at the owner
     public void SingleStream()
@@ -61,15 +73,44 @@ public class Weapon : MonoBehaviour
         Bullet b = bullet.AddComponent<Bullet>();
 
         Vector2 tragectory;
-        if (owner.GetComponent<PlayerControls>() == null)
-            tragectory = owner.GetComponent<Rigidbody2D>().velocity;
+        if (gameObject.GetComponent<PlayerControls>() == null)
+            tragectory = gameObject.GetComponent<EnemyBehavior>().GetFacingDir() * speed;
         else
-            tragectory = owner.GetComponent<PlayerControls>().GetFacingDir();
+            tragectory = gameObject.GetComponent<PlayerControls>().GetFacingDir().normalized * speed;
 
-        float offset = owner.transform.localScale.x;
-        b.Set(owner, tragectory, size, offset);
+        b.Set(gameObject, tragectory, size);
 
         bullets.Add(bullet);
+    }
+
+    //Bullets in a single stream, sources at the owner
+    public void NStream(int n, float theta)
+    {
+        Vector2 tragectory;
+        if (gameObject.GetComponent<PlayerControls>() == null)
+            tragectory = gameObject.GetComponent<EnemyBehavior>().GetFacingDir() * speed;
+        else
+            tragectory = gameObject.GetComponent<PlayerControls>().GetFacingDir().normalized * speed;
+
+        float rad = theta * Mathf.PI / 180.0f;
+        float dTheta = rad / (n-1);
+        float sTheta = -rad / 2;
+
+        for(int i = 0; i<n; i++)
+        {
+            GameObject bullet = new GameObject("Bullet");
+            Bullet b = bullet.AddComponent<Bullet>();
+
+            float x = Mathf.Cos(sTheta) * tragectory.x - Mathf.Sin(sTheta) * tragectory.y;
+            float y = Mathf.Sin(sTheta) * tragectory.x + Mathf.Cos(sTheta) * tragectory.y;
+            Vector2 trag = new Vector2(x, y);
+
+            b.Set(gameObject, trag, size);
+
+            bullets.Add(bullet);
+            sTheta += dTheta;
+        }
+        
     }
 
 
