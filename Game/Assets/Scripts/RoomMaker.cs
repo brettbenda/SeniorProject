@@ -7,16 +7,17 @@ using UnityEngine;
 
 public class RoomMaker : MonoBehaviour
 {
-    public UnityEngine.GameObject WallPrefab;
-    public UnityEngine.GameObject FloorPrefab;
-    public UnityEngine.GameObject RoomGroup;
+    public GameObject WallPrefab;
+    public GameObject FloorPrefab;
+    public GameObject RoomGroup;
     public int NumRooms;
     public int MaxRoomWidth;
     public int MaxRoomHeight;
     public Boolean linear;
-    public UnityEngine.GameObject Player;
-    private List<UnityEngine.GameObject> tiles;
-    private List<UnityEngine.GameObject> walls;
+    public GameObject Player;
+    public int NumEnemies;
+    private List<GameObject> tiles;
+    private List<GameObject> walls;
     private List<Room> rooms;
     private EndTile end;
 
@@ -57,6 +58,8 @@ public class RoomMaker : MonoBehaviour
 
         DetermineBestStartEndPoints();
 
+        AddEnemies();
+
         WallPrefab.SetActive(false);
         FloorPrefab.SetActive(false);
     }
@@ -77,6 +80,22 @@ public class RoomMaker : MonoBehaviour
 
 
     //Generation methods
+    private void AddEnemies()
+    {
+        for(int i = 0; i<NumEnemies; i++)
+        {
+            int rand = UnityEngine.Random.Range(0, tiles.Count);
+            Vector2 pos = tiles[rand].gameObject.transform.position;
+            GameObject enemy = new GameObject("Enemy");
+            enemy.transform.position = pos;
+
+            enemy.AddComponent<HealthBar>();
+            EnemyBehavior eb = enemy.AddComponent<EnemyBehavior>();
+            
+            eb.SetTarget(GameObject.Find("Player"));
+        }
+    }
+
     private void DetermineBestStartEndPoints()
     {
         Room BestStartRoom = null;
@@ -227,4 +246,5 @@ public class RoomMaker : MonoBehaviour
             Room.transform.parent = RoomGroup.transform;
         }
     }
+
 }

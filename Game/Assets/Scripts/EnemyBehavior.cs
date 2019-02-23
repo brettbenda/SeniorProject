@@ -11,27 +11,42 @@ public class EnemyBehavior : MonoBehaviour
     private Rigidbody2D rb;
     private Weapon weapon;
     private HealthBar hb;
+    private SpriteRenderer sr;
+    private Sprite sprite;
+    private BoxCollider2D collider;
 
     private Vector2 facing;
     public int MaxHealth;
     public int CurrentHealth;
     private bool dead;
+
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0);
         targeting = false;
         targetingRange = 4;
         facing = new Vector2(0, -1);
 
         MaxHealth = 100;
-        CurrentHealth = 10;
+        CurrentHealth = 100;
         dead = false;
 
-        rb = this.GetComponent<Rigidbody2D>();
+        rb = gameObject.AddComponent<Rigidbody2D>();
+        rb.freezeRotation = true;
+        rb.gravityScale = 0;
+
+        collider = gameObject.AddComponent<BoxCollider2D>();
+
+        sr = gameObject.AddComponent<SpriteRenderer>();
+        sprite = Resources.Load<Sprite>("Square");
+        sr.sprite = sprite;
+        sr.color = Color.yellow;
+
         HitManager man = GameObject.Find("HitManager").GetComponent<HitManager>();
         man.AddEnemy(this.gameObject);
 
-        hb = gameObject.AddComponent<HealthBar>();
+        hb = gameObject.GetComponent<HealthBar>();
         hb.SetHealth(MaxHealth, CurrentHealth);
 
         weapon = this.gameObject.AddComponent<Weapon>();
@@ -63,6 +78,11 @@ public class EnemyBehavior : MonoBehaviour
                 Chase();
                 this.weapon.Shoot();
             }
+        }
+
+        if (dead)
+        {
+            Destroy(gameObject);
         }
 
     }
@@ -119,5 +139,10 @@ public class EnemyBehavior : MonoBehaviour
             dead = true;
             rb.velocity = Vector2.zero;
         }
+    }
+
+    public void SetTarget(GameObject target)
+    {
+        this.Target = target;
     }
 }
