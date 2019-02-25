@@ -24,4 +24,13 @@ public class EndTile : MonoBehaviour
             Debug.Log("EXIT");
         }
     }
+
+    public bool Triggered()
+    {
+        if (Player.GetComponent<BoxCollider2D>().IsTouching(this.GetComponent<BoxCollider2D>()))
+        {
+            return true;
+        }
+        return false;
+    }
 }

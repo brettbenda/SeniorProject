@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour {
     private bool active;
 	// Use this for initialization
 	void Start () {
-		
+        active = true;
 	}
 	
 	// Update is called once per frame
@@ -16,6 +16,18 @@ public class CameraController : MonoBehaviour {
         {
             Vector3 pos = new Vector3(focus.transform.position.x, focus.transform.position.y, -10);
             this.transform.position = pos;
+
+            float zoom = Input.GetAxis("Mouse ScrollWheel");
+            if( zoom != 0)
+            {
+                Camera cam = this.GetComponent<Camera>();
+                cam.orthographicSize += zoom*cam.orthographicSize;
+
+                if (cam.orthographicSize < 2)
+                    cam.orthographicSize = 2;
+                if (cam.orthographicSize > 10)
+                    cam.orthographicSize = 10;
+            }
         }
 
     }

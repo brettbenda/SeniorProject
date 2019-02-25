@@ -88,4 +88,14 @@ public class Room : MonoBehaviour {
     {
         return WallList;
     }
+
+    public void RemoveFloor(GameObject floor)
+    {
+        this.FloorList.Remove(floor);
+    }
+
+    public void RemoveWall(GameObject wall)
+    {
+        this.WallList.Remove(wall);
+    }
 }
