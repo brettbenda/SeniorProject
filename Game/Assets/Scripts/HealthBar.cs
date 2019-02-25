@@ -26,20 +26,19 @@ public class HealthBar : MonoBehaviour
         SpriteRenderer gsr = greenBar.AddComponent<SpriteRenderer>();
         gsr.sprite = Resources.Load<Sprite>("Square");
         gsr.color = Color.green;
+        gsr.sortingOrder = 1;
         SpriteRenderer rsr = redBar.AddComponent<SpriteRenderer>();
         rsr.sprite = Resources.Load<Sprite>("Square");
         rsr.color = Color.red;
+        gsr.sortingOrder = 2;
 
         
     }
     // Update is called once per frame
     void Update()
     {
-       // greenBar.transform.parent = gameObject.transform;
-        greenBar.transform.position = gameObject.transform.position + new Vector3(0, 0.3f, 0) - offset;
-       // redBar.transform.parent = gameObject.transform;
-        redBar.transform.position = gameObject.transform.position + new Vector3(0, 0.3f ,0);
-        
+        greenBar.transform.position = gameObject.transform.position + new Vector3(0, 0.6f*gameObject.transform.localScale.y, 0) - offset;
+        redBar.transform.position = gameObject.transform.position + new Vector3(0, 0.6f * gameObject.transform.localScale.y, 0);
     }
 
     public void SetHealth(int max, int current)

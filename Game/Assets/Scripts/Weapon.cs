@@ -24,7 +24,7 @@ public class Weapon : MonoBehaviour
         theta = 0;
         maxBulletAge = 3.0f;
         bullets = new List<GameObject>();
-        HitManager man = GameObject.Find("HitManager").GetComponent<HitManager>();
+        HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
         man.AddWeapon(this);
     }
 

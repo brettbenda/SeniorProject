@@ -22,13 +22,13 @@ public class PlayerControls : MonoBehaviour {
         weapon = this.gameObject.AddComponent<Weapon>();
 
         hb = this.GetComponent<HealthBar>();
-        MaxHealth = 100;
-        CurrentHealth = 100;
+        MaxHealth = 1000;
+        CurrentHealth = 1000;
         dead = false;
         hb.SetHealth(MaxHealth, CurrentHealth);
+        speed = 1.5f;
 
-
-        HitManager man = UnityEngine.GameObject.Find("HitManager").GetComponent<HitManager>();
+        HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
         man.SetPlayer(this.gameObject);
     }
 
