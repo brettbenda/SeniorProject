@@ -16,6 +16,7 @@ public class RoomMaker : MonoBehaviour
     public Boolean linear;
     public GameObject Player;
     public int NumEnemies;
+    public int seed;
     private List<GameObject> tiles;
     private List<GameObject> walls;
     private List<Room> rooms;
@@ -24,6 +25,7 @@ public class RoomMaker : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        UnityEngine.Random.InitState(seed);
         CreateMap();
     }
 

@@ -11,10 +11,10 @@ public class Bullet : MonoBehaviour
     private Sprite sprite;
     private GameObject parent;
     private float age;
-    private int damage;
+    public int damage;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         age = 0;
         damage = 10;
@@ -27,7 +27,7 @@ public class Bullet : MonoBehaviour
     }
 
     //Adds the attributes
-    public void Set(GameObject parent, Vector2 tragectory, float size)
+    public void Set(GameObject parent, Vector2 tragectory, float size, int damage)
     {
         transform.parent = parent.transform;
         transform.position = parent.transform.position;
@@ -45,6 +45,8 @@ public class Bullet : MonoBehaviour
         rb.gravityScale = 0;
         rb.freezeRotation = true;
         rb.velocity = tragectory + parent.GetComponent<Rigidbody2D>().velocity;
+
+        this.damage = damage;
     }
 
     //returns age

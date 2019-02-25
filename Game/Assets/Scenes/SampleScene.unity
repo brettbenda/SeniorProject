@@ -689,12 +689,13 @@ MonoBehaviour:
   WallPrefab: {fileID: 1253314593}
   FloorPrefab: {fileID: 442192786}
   RoomGroup: {fileID: 21327582}
-  NumRooms: 20
+  NumRooms: 4
   MaxRoomWidth: 20
   MaxRoomHeight: 20
   linear: 0
   Player: {fileID: 1287927087}
-  NumEnemies: 50
+  NumEnemies: 7
+  seed: 1
 --- !u!4 &1952949847
 Transform:
   m_ObjectHideFlags: 0

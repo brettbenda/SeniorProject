@@ -22,8 +22,8 @@ public class PlayerControls : MonoBehaviour {
         weapon = this.gameObject.AddComponent<Weapon>();
 
         hb = this.GetComponent<HealthBar>();
-        MaxHealth = 1000;
-        CurrentHealth = 1000;
+        MaxHealth = 100;
+        CurrentHealth = 100;
         dead = false;
         hb.SetHealth(MaxHealth, CurrentHealth);
         speed = 1.5f;

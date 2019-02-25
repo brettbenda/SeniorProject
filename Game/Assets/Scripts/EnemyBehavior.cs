@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum ENEMY_TYPE
 {
-    SHOOTER, CHASER, BRUTE, NumberOfTypes
+    SHOOTER, CHASER, BRUTE, SNIPER, NumberOfTypes
 };
 
 public class EnemyBehavior : MonoBehaviour
@@ -46,6 +46,9 @@ public class EnemyBehavior : MonoBehaviour
                 break;
             case ENEMY_TYPE.BRUTE:
                 BruteBehavior();
+                break;
+            case ENEMY_TYPE.SNIPER:
+                SniperBehavior();
                 break;
         }
     }
@@ -134,6 +137,21 @@ public class EnemyBehavior : MonoBehaviour
             }
         }
     }
+
+    void SniperBehavior()
+    {
+        if (!targeting)
+        {
+            CheckIfInRange();
+        }
+        else if (!dead)
+        {
+            facing = Target.transform.position - transform.position;
+            facing.Normalize();
+            Stay();
+            weapon.Shoot();
+        }
+    }
     //Enemy moves towards player
     void Chase()
     {
@@ -172,6 +190,9 @@ public class EnemyBehavior : MonoBehaviour
                 break;
             case ENEMY_TYPE.BRUTE:
                 SetBrute();
+                break;
+            case ENEMY_TYPE.SNIPER:
+                SetSniper();
                 break;
         }
     }
@@ -217,10 +238,10 @@ public class EnemyBehavior : MonoBehaviour
         targetingRange = 8;
         facing = new Vector2(0, -1);
 
-        MaxHealth = 200;
-        CurrentHealth = 200;
+        MaxHealth = 50;
+        CurrentHealth = 50;
         dead = false;
-        speed = 1.4f;
+        speed = 1.6f;
 
         rb = gameObject.AddComponent<Rigidbody2D>();
         rb.freezeRotation = true;
@@ -250,8 +271,8 @@ public class EnemyBehavior : MonoBehaviour
         targetingRange = 4;
         facing = new Vector2(0, -1);
 
-        MaxHealth = 500;
-        CurrentHealth = 500;
+        MaxHealth = 200;
+        CurrentHealth = 200;
         dead = false;
         speed = 0.5f;
 
@@ -273,6 +294,41 @@ public class EnemyBehavior : MonoBehaviour
         hb.SetHealth(MaxHealth, CurrentHealth);
 
         weapon = this.gameObject.AddComponent<Weapon>();
+        weapon.Set(1f, 0.5f, 2.0f, 50, 1, 0, 1);
+    }
+
+    public void SetSniper()
+    {
+        type = ENEMY_TYPE.SNIPER;
+        gameObject.transform.localScale = new Vector3(0.25f, 0.25f, 0);
+        targeting = false;
+        targetingRange = 10;
+        facing = new Vector2(0, -1);
+
+        MaxHealth = 50;
+        CurrentHealth = 50;
+        dead = false;
+        speed = 1.0f;
+
+        rb = gameObject.AddComponent<Rigidbody2D>();
+        rb.freezeRotation = true;
+        rb.gravityScale = 0;
+
+        collider = gameObject.AddComponent<BoxCollider2D>();
+
+        sr = gameObject.AddComponent<SpriteRenderer>();
+        sprite = Resources.Load<Sprite>("Square");
+        sr.sprite = sprite;
+        sr.color = Color.white;
+
+        HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
+        man.AddEnemy(this.gameObject);
+
+        hb = gameObject.GetComponent<HealthBar>();
+        hb.SetHealth(MaxHealth, CurrentHealth);
+
+        weapon = this.gameObject.AddComponent<Weapon>();
+        weapon.Set(0.33f, 0.2f, 7.0f, 50, 1, 0, 1);
     }
 
     public void Hit(Bullet b)

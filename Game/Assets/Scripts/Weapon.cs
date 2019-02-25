@@ -11,6 +11,7 @@ public class Weapon : MonoBehaviour
     public int n;
     public float theta;
     public float maxBulletAge;
+    public int damage;
     List<GameObject> bullets;
     private float time;
 
@@ -23,12 +24,13 @@ public class Weapon : MonoBehaviour
         n = 1;
         theta = 0;
         maxBulletAge = 3.0f;
+        damage = 10;
         bullets = new List<GameObject>();
         HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
         man.AddWeapon(this);
     }
 
-    void Set(float rate, float size, float speed, int n, float theta, float maxBulletAge)
+    public void Set(float rate, float size, float speed, int damage, int n, float theta, float maxBulletAge)
     {
         this.rate = rate;
         this.size = size;
@@ -36,6 +38,7 @@ public class Weapon : MonoBehaviour
         this.n = n;
         this.theta = theta;
         this.maxBulletAge = maxBulletAge;
+        this.damage = damage;
     }
 
     // Update is called once per frame
@@ -57,7 +60,6 @@ public class Weapon : MonoBehaviour
     {
         if (time > 1.0f / rate)
         {
-            Debug.Log("Weapon Active");
             NStream(n,theta);
             time = 0;
         }
@@ -78,7 +80,7 @@ public class Weapon : MonoBehaviour
         else
             tragectory = gameObject.GetComponent<PlayerControls>().GetFacingDir().normalized * speed;
 
-        b.Set(gameObject, tragectory, size);
+        b.Set(gameObject, tragectory, size, damage);
 
         bullets.Add(bullet);
     }
@@ -105,7 +107,7 @@ public class Weapon : MonoBehaviour
             float y = Mathf.Sin(sTheta) * tragectory.x + Mathf.Cos(sTheta) * tragectory.y;
             Vector2 trag = new Vector2(x, y);
 
-            b.Set(gameObject, trag, size);
+            b.Set(gameObject, trag, size, damage);
 
             bullets.Add(bullet);
             sTheta += dTheta;

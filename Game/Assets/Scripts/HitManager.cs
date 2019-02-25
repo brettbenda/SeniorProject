@@ -38,7 +38,6 @@ public class HitManager : MonoBehaviour
                 //Ignore self damage
                 if (PlayerHit(b) && w.GetOwner()!= player)
                 {
-                    Debug.Log("Player hit");
                     player.GetComponent<PlayerControls>().Hit(b.GetComponent<Bullet>());
                     w.GetBullets().Remove(b);
                     Destroy(b);
@@ -48,13 +47,12 @@ public class HitManager : MonoBehaviour
                     //ignore self damage
                     if (EnemyHit(e, b) && w.GetOwner() != e && w.GetOwner().GetComponent<EnemyBehavior>() == null)
                     {
-                        Debug.Log("Enemy hit");
                         e.GetComponent<EnemyBehavior>().Hit(b.GetComponent<Bullet>());
 
                         w.GetBullets().Remove(b);
                         Destroy(b);
 
-                        if(e.GetComponent<EnemyBehavior>().CurrentHealth == 0)
+                        if(e.GetComponent<EnemyBehavior>().CurrentHealth <= 0)
                         {
                             weapons.Remove(e.GetComponent<Weapon>());
                             enemies.Remove(e);

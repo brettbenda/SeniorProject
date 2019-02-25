@@ -37,7 +37,7 @@ public class HealthBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        greenBar.transform.position = gameObject.transform.position + new Vector3(0, 0.6f*gameObject.transform.localScale.y, 0) - offset;
+        greenBar.transform.position = gameObject.transform.position + new Vector3(0, 0.6f * gameObject.transform.localScale.y, 0) - offset;
         redBar.transform.position = gameObject.transform.position + new Vector3(0, 0.6f * gameObject.transform.localScale.y, 0);
     }
 
