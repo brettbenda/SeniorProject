@@ -26,6 +26,7 @@ public class EnemyBehavior : MonoBehaviour
     public int CurrentHealth;
     private bool dead;
     private float speed;
+    private int touchDamage;
 
     // Start is called before the first frame update
     void Awake()
@@ -213,6 +214,7 @@ public class EnemyBehavior : MonoBehaviour
         rb = gameObject.AddComponent<Rigidbody2D>();
         rb.freezeRotation = true;
         rb.gravityScale = 0;
+        touchDamage = 10;
 
         collider = gameObject.AddComponent<BoxCollider2D>();
 
@@ -242,6 +244,7 @@ public class EnemyBehavior : MonoBehaviour
         CurrentHealth = 50;
         dead = false;
         speed = 1.6f;
+        touchDamage = 10;
 
         rb = gameObject.AddComponent<Rigidbody2D>();
         rb.freezeRotation = true;
@@ -275,6 +278,7 @@ public class EnemyBehavior : MonoBehaviour
         CurrentHealth = 200;
         dead = false;
         speed = 0.5f;
+        touchDamage = 10;
 
         rb = gameObject.AddComponent<Rigidbody2D>();
         rb.freezeRotation = true;
@@ -309,6 +313,7 @@ public class EnemyBehavior : MonoBehaviour
         CurrentHealth = 50;
         dead = false;
         speed = 1.0f;
+        touchDamage = 10;
 
         rb = gameObject.AddComponent<Rigidbody2D>();
         rb.freezeRotation = true;
@@ -349,5 +354,10 @@ public class EnemyBehavior : MonoBehaviour
     public void SetTarget(GameObject target)
     {
         this.Target = target;
+    }
+
+    public int GetTouchDamage()
+    {
+        return touchDamage;
     }
 }

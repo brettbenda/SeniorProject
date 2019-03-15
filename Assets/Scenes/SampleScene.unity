@@ -695,7 +695,7 @@ MonoBehaviour:
   linear: 0
   Player: {fileID: 1287927087}
   NumEnemies: 7
-  seed: 1
+  seed: 34
 --- !u!4 &1952949847
 Transform:
   m_ObjectHideFlags: 0

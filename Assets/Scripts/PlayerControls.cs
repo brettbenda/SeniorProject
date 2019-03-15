@@ -97,4 +97,20 @@ public class PlayerControls : MonoBehaviour {
             rb.velocity = Vector2.zero;
         }
     }
+
+    public void Hit(int damage)
+    {
+        if (!dead)
+        {
+            CurrentHealth -= damage;
+            hb.Hit(damage);
+        }
+
+        if (CurrentHealth <= 0)
+        {
+            active = false;
+            dead = true;
+            rb.velocity = Vector2.zero;
+        }
+    }
 }

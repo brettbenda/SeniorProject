@@ -71,6 +71,15 @@ public class HitManager : MonoBehaviour
                 }
             }
         }
+
+        foreach (GameObject e in enemies.ToArray())
+        {
+            //ignore self damage
+            if (e.GetComponent<BoxCollider2D>().bounds.Intersects(player.GetComponent<BoxCollider2D>().bounds))
+            {
+                player.GetComponent<PlayerControls>().Hit(e.GetComponent<EnemyBehavior>().GetTouchDamage());
+            }
+        }
     }
 
     //Determines if a buller hits the player
