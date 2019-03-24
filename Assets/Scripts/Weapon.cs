@@ -80,7 +80,7 @@ public class Weapon : MonoBehaviour
         else
             tragectory = gameObject.GetComponent<PlayerControls>().GetFacingDir().normalized * speed;
 
-        b.Set(gameObject, tragectory, size, damage);
+        b.Set(gameObject, tragectory, size/damage, damage);
 
         bullets.Add(bullet);
     }

@@ -35,4 +35,9 @@ public class CameraController : MonoBehaviour {
     public void Toggle() { active = !active; }
 
     public bool IsActive() { return active; }
+
+    public void SetFocus(GameObject focus) {
+        this.focus = focus;
+        this.GetComponent<Camera>().orthographicSize = 4.0f;
+    }
 }

@@ -56,7 +56,9 @@ public class HitManager : MonoBehaviour
                         {
                             weapons.Remove(e.GetComponent<Weapon>());
                             enemies.Remove(e);
+                            player.GetComponent<PlayerControls>().AwardExperience(e.GetComponent<EnemyBehavior>().MaxHealth);
                             Destroy(e);
+
                             break;
                         }
                     }
@@ -75,10 +77,17 @@ public class HitManager : MonoBehaviour
         foreach (GameObject e in enemies.ToArray())
         {
             //ignore self damage
-            if (e.GetComponent<BoxCollider2D>().bounds.Intersects(player.GetComponent<BoxCollider2D>().bounds))
+            Bounds e_b = e.GetComponent<BoxCollider2D>().bounds;
+            Bounds p_b = player.GetComponent<BoxCollider2D>().bounds;
+
+            e_b.Expand(new Vector3(0.05f, 0.05f, 0));
+
+            if (e_b.Intersects(p_b))
             {
                 player.GetComponent<PlayerControls>().Hit(e.GetComponent<EnemyBehavior>().GetTouchDamage());
             }
+
+            e_b.Expand(new Vector3(-0.05f, -0.05f, 0));
         }
     }
 

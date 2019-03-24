@@ -21,12 +21,16 @@ public class RoomMaker : MonoBehaviour
     private List<GameObject> walls;
     private List<Room> rooms;
     private EndTile end;
+    private bool ended = false;
 
     // Use this for initialization
     void Start()
     {
         UnityEngine.Random.InitState(seed);
-        CreateMap();
+        WallPrefab.SetActive(false);
+        FloorPrefab.SetActive(false);
+        Player.SetActive(false);
+        //CreateMap();
     }
 
     private void Update()
@@ -40,18 +44,23 @@ public class RoomMaker : MonoBehaviour
             CreateMap();
         }
 
-        if (end.Triggered())
+        if(end != null)
         {
-            DestroyMap();
-            CreateMap();
+            if (end.Triggered())
+            {
+                DestroyMap();
+            }
         }
+        
     }
 
-    private void CreateMap()
+    public void CreateMap()
     {
+        ended = false;
+        Player.SetActive(true);
         WallPrefab.SetActive(true);
         FloorPrefab.SetActive(true);
-
+        Player.SetActive(true);
         CreateRooms();
 
         CreateCorridors();
@@ -83,6 +92,8 @@ public class RoomMaker : MonoBehaviour
         Destroy(RoomGroup);
         GameObject.Find("[HitManager]").GetComponent<HitManager>().Clear();
         RoomGroup = new GameObject("Rooms");
+        Player.SetActive(false);
+        ended = true;
     }
 
 
@@ -264,5 +275,7 @@ public class RoomMaker : MonoBehaviour
             Room.transform.parent = RoomGroup.transform;
         }
     }
+
+    public bool IsOver() { return ended; }
 
 }

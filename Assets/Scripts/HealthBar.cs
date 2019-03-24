@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HealthBar : MonoBehaviour
 {
@@ -45,6 +43,11 @@ public class HealthBar : MonoBehaviour
     {
         MaxHealth = max;
         CurrentHealth = current;
+        float percent = (float)CurrentHealth / (float)MaxHealth;
+        greenBar.transform.localScale = new Vector3(percent, 0.1f, 0);
+
+        float xOffset = (1.0f - percent) / 4.0f;
+        offset = new Vector3(xOffset, 0, 1);
     }
 
     public void Hit(int damage)
@@ -53,7 +56,8 @@ public class HealthBar : MonoBehaviour
         float percent = (float)CurrentHealth / (float)MaxHealth;
         greenBar.transform.localScale = new Vector3(percent, 0.1f, 0);
 
-        float xOffset = (1.0f - percent) / 4.0f;
+        float xOffset = (1.0f - percent) / 2.0f;
+        xOffset *= gameObject.transform.localScale.x;
         offset = new Vector3(xOffset, 0, 1);
     }
 }
