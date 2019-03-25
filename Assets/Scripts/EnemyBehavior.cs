@@ -4,15 +4,18 @@ using UnityEngine;
 
 public enum ENEMY_TYPE
 {
-    SHOOTER, CHASER, BRUTE, SNIPER, NumberOfTypes
+    SHOOTER, CHASER, BRUTE, SNIPER,  TURRET, NumberOfTypes 
 };
 
 public class EnemyBehavior : MonoBehaviour
 {
+    static int levelNum = 0;
+
     public GameObject Target;
     public bool targeting;
     public float targetingRange;
     public ENEMY_TYPE type;
+    public float modifier;
 
     private Rigidbody2D rb;
     private Weapon weapon;
@@ -22,21 +25,47 @@ public class EnemyBehavior : MonoBehaviour
     private BoxCollider2D collider;
 
     private Vector2 facing;
+    private Vector2[] vectors = { new Vector2(0, -1) , new Vector2(-1,0) , new Vector2(0, 1) , new Vector2(1, 0) };
+    private int dirCount = 0;
     public int MaxHealth;
     public int CurrentHealth;
     private bool dead;
     private float speed;
     private int touchDamage;
+    public float timer;
 
     // Start is called before the first frame update
     void Awake()
     {
-        //SetShooter();
+        targeting = false;
+        targetingRange = 4;
+
+        facing = new Vector2(0, -1);
+        dead = false;
+
+        rb = gameObject.AddComponent<Rigidbody2D>();
+        rb.freezeRotation = true;
+        rb.gravityScale = 0;
+
+        collider = gameObject.AddComponent<BoxCollider2D>();
+
+        sr = gameObject.AddComponent<SpriteRenderer>();
+        sprite = Resources.Load<Sprite>("Square");
+        sr.sprite = sprite;
+
+        HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
+        man.AddEnemy(this.gameObject);
+
+        hb = gameObject.GetComponent<HealthBar>();
+        weapon = this.gameObject.AddComponent<Weapon>();
+        modifier = 1.0f + Random.Range(-levelNum / 10.0f, levelNum / 10.0f);
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        timer += Time.deltaTime ;
         switch (type)
         {
             case ENEMY_TYPE.SHOOTER:
@@ -50,6 +79,9 @@ public class EnemyBehavior : MonoBehaviour
                 break;
             case ENEMY_TYPE.SNIPER:
                 SniperBehavior();
+                break;
+            case ENEMY_TYPE.TURRET:
+                TurretBehavior();
                 break;
         }
     }
@@ -153,6 +185,24 @@ public class EnemyBehavior : MonoBehaviour
             weapon.Shoot();
         }
     }
+
+    void TurretBehavior()
+    {
+        if (timer < 1.0f)
+        {
+            weapon.Shoot();
+        }
+        else
+        {
+            timer = 0;
+            dirCount++;
+            if (dirCount == 4)
+                dirCount = 0;
+
+            facing = vectors[dirCount];
+        }
+    }
+
     //Enemy moves towards player
     void Chase()
     {
@@ -195,6 +245,9 @@ public class EnemyBehavior : MonoBehaviour
             case ENEMY_TYPE.SNIPER:
                 SetSniper();
                 break;
+            case ENEMY_TYPE.TURRET:
+                SetTurret();
+                break;
         }
     }
 
@@ -202,138 +255,86 @@ public class EnemyBehavior : MonoBehaviour
     {
         type = ENEMY_TYPE.SHOOTER;
         gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0);
-        targeting = false;
-        targetingRange = 4;
-        facing = new Vector2(0, -1);
 
-        MaxHealth = 100;
-        CurrentHealth = 100;
-        dead = false;
-        speed = 1;
+        MaxHealth = (int)(50*modifier);
+        CurrentHealth = MaxHealth;
+        speed = 1.0f * modifier;
 
-        rb = gameObject.AddComponent<Rigidbody2D>();
-        rb.freezeRotation = true;
-        rb.gravityScale = 0;
-        touchDamage = 10;
+        touchDamage = (int)(10*modifier);
 
-        collider = gameObject.AddComponent<BoxCollider2D>();
-
-        sr = gameObject.AddComponent<SpriteRenderer>();
-        sprite = Resources.Load<Sprite>("Square");
-        sr.sprite = sprite;
         sr.color = Color.yellow;
 
-        HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
-        man.AddEnemy(this.gameObject);
-
-        hb = gameObject.GetComponent<HealthBar>();
         hb.SetHealth(MaxHealth, CurrentHealth);
-
-        weapon = this.gameObject.AddComponent<Weapon>();
+        weapon.Set(1.0f*modifier, 0.5f*modifier, 3.0f * modifier, (int)(10 * modifier), 1, 0, 1);
     }
 
     public void SetChaser()
     {
         type = ENEMY_TYPE.CHASER;
         gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0);
-        targeting = false;
         targetingRange = 8;
-        facing = new Vector2(0, -1);
 
-        MaxHealth = 50;
-        CurrentHealth = 50;
-        dead = false;
+        MaxHealth = (int)(50 * modifier);
+        CurrentHealth = MaxHealth;
         speed = 1.6f;
-        touchDamage = 10;
+        touchDamage = (int)(10 * modifier);
 
-        rb = gameObject.AddComponent<Rigidbody2D>();
-        rb.freezeRotation = true;
-        rb.gravityScale = 0;
-
-        collider = gameObject.AddComponent<BoxCollider2D>();
-
-        sr = gameObject.AddComponent<SpriteRenderer>();
-        sprite = Resources.Load<Sprite>("Square");
-        sr.sprite = sprite;
         sr.color = Color.magenta;
 
-        HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
-        man.AddEnemy(this.gameObject);
-
-        hb = gameObject.GetComponent<HealthBar>();
         hb.SetHealth(MaxHealth, CurrentHealth);
-
-        weapon = this.gameObject.AddComponent<Weapon>();
     }
 
     public void SetBrute()
     {
         type = ENEMY_TYPE.BRUTE;
         gameObject.transform.localScale = new Vector3(1f, 1f, 0);
-        targeting = false;
-        targetingRange = 4;
-        facing = new Vector2(0, -1);
 
-        MaxHealth = 200;
-        CurrentHealth = 200;
-        dead = false;
-        speed = 0.5f;
-        touchDamage = 10;
+        MaxHealth = (int)(200 * modifier);
+        CurrentHealth = MaxHealth;
+        speed = 0.5f * modifier;
+        touchDamage = (int)(10 * modifier);
 
-        rb = gameObject.AddComponent<Rigidbody2D>();
-        rb.freezeRotation = true;
-        rb.gravityScale = 0;
-
-        collider = gameObject.AddComponent<BoxCollider2D>();
-
-        sr = gameObject.AddComponent<SpriteRenderer>();
-        sprite = Resources.Load<Sprite>("Square");
-        sr.sprite = sprite;
         sr.color = Color.cyan;
 
-        HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
-        man.AddEnemy(this.gameObject);
-
-        hb = gameObject.GetComponent<HealthBar>();
         hb.SetHealth(MaxHealth, CurrentHealth);
 
-        weapon = this.gameObject.AddComponent<Weapon>();
-        weapon.Set(1f, 0.5f, 2.0f, 50, 1, 0, 1);
+        weapon.Set(1f * modifier, 0.5f * modifier, 2.0f * modifier, (int)(50 * modifier), 1, 0, 1);
     }
 
     public void SetSniper()
     {
         type = ENEMY_TYPE.SNIPER;
         gameObject.transform.localScale = new Vector3(0.25f, 0.25f, 0);
-        targeting = false;
         targetingRange = 10;
-        facing = new Vector2(0, -1);
 
-        MaxHealth = 50;
-        CurrentHealth = 50;
-        dead = false;
-        speed = 1.0f;
-        touchDamage = 10;
+        MaxHealth = (int)(50 * modifier);
+        CurrentHealth = MaxHealth;
+        speed = 1.0f * modifier;
+        touchDamage = (int)(10 * modifier);
 
-        rb = gameObject.AddComponent<Rigidbody2D>();
-        rb.freezeRotation = true;
-        rb.gravityScale = 0;
-
-        collider = gameObject.AddComponent<BoxCollider2D>();
-
-        sr = gameObject.AddComponent<SpriteRenderer>();
-        sprite = Resources.Load<Sprite>("Square");
-        sr.sprite = sprite;
         sr.color = Color.white;
 
-        HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
-        man.AddEnemy(this.gameObject);
-
-        hb = gameObject.GetComponent<HealthBar>();
         hb.SetHealth(MaxHealth, CurrentHealth);
 
-        weapon = this.gameObject.AddComponent<Weapon>();
-        weapon.Set(0.33f, 0.2f, 7.0f, 50, 1, 0, 1);
+        weapon.Set(0.33f * modifier, 0.2f * modifier, 7.0f * modifier, (int)(50 * modifier), 1, 0, 1);
+    }
+
+    public void SetTurret()
+    {
+        type = ENEMY_TYPE.TURRET;
+        gameObject.transform.localScale = new Vector3(0.25f, 0.25f, 0);
+        targetingRange = 1000;
+
+        MaxHealth = (int)(100 * modifier);
+        CurrentHealth = MaxHealth;
+        speed = 1.0f * modifier;
+        touchDamage = (int)(10 * modifier);
+
+        sr.color = Color.white;
+
+        hb.SetHealth(MaxHealth, CurrentHealth);
+
+        weapon.Set(3 , 0.5f * modifier, 3.0f * modifier, (int)(50 * modifier), 1, 0, 3);
     }
 
     public void Hit(Bullet b)
@@ -359,5 +360,10 @@ public class EnemyBehavior : MonoBehaviour
     public int GetTouchDamage()
     {
         return touchDamage;
+    }
+
+    public static void IncrementLevel()
+    {
+        levelNum++;
     }
 }

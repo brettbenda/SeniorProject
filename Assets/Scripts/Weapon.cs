@@ -69,23 +69,6 @@ public class Weapon : MonoBehaviour
     public GameObject GetOwner() { return gameObject; }
 
     //Bullets in a single stream, sources at the owner
-    public void SingleStream()
-    {
-        GameObject bullet = new GameObject("Bullet");
-        Bullet b = bullet.AddComponent<Bullet>();
-
-        Vector2 tragectory;
-        if (gameObject.GetComponent<PlayerControls>() == null)
-            tragectory = gameObject.GetComponent<EnemyBehavior>().GetFacingDir() * speed;
-        else
-            tragectory = gameObject.GetComponent<PlayerControls>().GetFacingDir().normalized * speed;
-
-        b.Set(gameObject, tragectory, size/damage, damage);
-
-        bullets.Add(bullet);
-    }
-
-    //Bullets in a single stream, sources at the owner
     public void NStream(int n, float theta)
     {
         Vector2 tragectory;

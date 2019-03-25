@@ -34,7 +34,7 @@ public class PlayerControls : MonoBehaviour {
         speed = 1.5f;
 
         experience = 0;
-        nextLevelXP = 1000;
+        nextLevelXP = 500;
 
         HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
         man.SetPlayer(this.gameObject);
@@ -134,7 +134,7 @@ public class PlayerControls : MonoBehaviour {
     public void LevelUp()
     {
         level++;
-        nextLevelXP *= 2;
+        nextLevelXP = (int)(nextLevelXP*1.5f);
 
         speed += 0.15f;
         MaxHealth += 10;

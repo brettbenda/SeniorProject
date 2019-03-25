@@ -17,6 +17,7 @@ public class RoomMaker : MonoBehaviour
     public GameObject Player;
     public int NumEnemies;
     public int seed;
+    public int levelNum;
     private List<GameObject> tiles;
     private List<GameObject> walls;
     private List<Room> rooms;
@@ -26,10 +27,12 @@ public class RoomMaker : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        UnityEngine.Random.InitState(seed);
+       // UnityEngine.Random.InitState(seed);
         WallPrefab.SetActive(false);
         FloorPrefab.SetActive(false);
         Player.SetActive(false);
+        levelNum = 0;
+        EnemyBehavior.IncrementLevel();
         //CreateMap();
     }
 
@@ -56,6 +59,9 @@ public class RoomMaker : MonoBehaviour
 
     public void CreateMap()
     {
+        levelNum++;
+        EnemyBehavior.IncrementLevel();
+
         ended = false;
         Player.SetActive(true);
         WallPrefab.SetActive(true);
@@ -104,15 +110,20 @@ public class RoomMaker : MonoBehaviour
         {
             int rand = UnityEngine.Random.Range(0, tiles.Count);
             Vector2 pos = tiles[rand].gameObject.transform.position;
-
-
-            rand = UnityEngine.Random.Range(0,(int)ENEMY_TYPE.NumberOfTypes);
-            GameObject enemy = new GameObject("Enemy");
-            enemy.transform.position = pos;
-            enemy.AddComponent<HealthBar>();
-            EnemyBehavior eb = enemy.AddComponent<EnemyBehavior>();
-            eb.SetType((ENEMY_TYPE)rand);
-            eb.SetTarget(GameObject.Find("Player"));
+            if(Vector2.Distance(pos, Player.transform.position) > 10)
+            {
+                rand = UnityEngine.Random.Range(0,(int)ENEMY_TYPE.NumberOfTypes);
+                GameObject enemy = new GameObject("Enemy");
+                enemy.transform.position = pos;
+                enemy.AddComponent<HealthBar>();
+                EnemyBehavior eb = enemy.AddComponent<EnemyBehavior>();
+                eb.SetType((ENEMY_TYPE)rand);
+                eb.SetTarget(GameObject.Find("Player"));
+            }
+            else
+            {
+                i--;
+            }
         }
     }
 
@@ -192,8 +203,6 @@ public class RoomMaker : MonoBehaviour
                 walls.Add(o);
             }
         }
-
-        bool removeO1 = false;
         //remove overlap
         foreach (GameObject o1 in walls.ToArray())
         {
@@ -207,7 +216,6 @@ public class RoomMaker : MonoBehaviour
                         if (r.GetWalls().Contains(o1))
                             r.RemoveWall(o1);
                     }
-                    removeO1 = true;
                     walls.Remove(o1);
                     Destroy(o1);
                     break;

@@ -41,6 +41,7 @@ public class HitManager : MonoBehaviour
                     player.GetComponent<PlayerControls>().Hit(b.GetComponent<Bullet>());
                     w.GetBullets().Remove(b);
                     Destroy(b);
+                    break;
                 }
                 foreach(GameObject e in enemies.ToArray())
                 {
@@ -57,10 +58,12 @@ public class HitManager : MonoBehaviour
                             weapons.Remove(e.GetComponent<Weapon>());
                             enemies.Remove(e);
                             player.GetComponent<PlayerControls>().AwardExperience(e.GetComponent<EnemyBehavior>().MaxHealth);
+                            Destroy(e.GetComponent<Weapon>());
                             Destroy(e);
 
                             break;
                         }
+                        break;
                     }
                 }
                 foreach (GameObject wa in walls.ToArray())
@@ -69,6 +72,7 @@ public class HitManager : MonoBehaviour
                     {
                         w.GetBullets().Remove(b);
                         Destroy(b);
+                        break;
                     }
                 }
             }

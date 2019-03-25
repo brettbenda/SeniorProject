@@ -25,8 +25,8 @@ public class CameraController : MonoBehaviour {
 
                 if (cam.orthographicSize < 2)
                     cam.orthographicSize = 2;
-                if (cam.orthographicSize > 10)
-                    cam.orthographicSize = 10;
+                if (cam.orthographicSize > 6)
+                    cam.orthographicSize = 6;
             }
         }
 

@@ -29,7 +29,6 @@ public class HealthBar : MonoBehaviour
         rsr.sprite = Resources.Load<Sprite>("Square");
         rsr.color = Color.red;
         gsr.sortingOrder = 2;
-
         
     }
     // Update is called once per frame
