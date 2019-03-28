@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311912, g: 0.3807398, b: 0.3587271, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -629,12 +629,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 242b34b5665ce5f4b82f274711074c52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1287927092}
-  pointsText: {fileID: 222783623}
-  weaponRateInfo: {fileID: 865611152}
-  weaponSpeedInfo: {fileID: 1349118998}
-  weaponDmgInfo: {fileID: 1670152833}
-  weaponBulletInfo: {fileID: 48710060}
+  player: {fileID: 0}
+  pointsText: {fileID: 0}
+  weaponRateInfo: {fileID: 0}
+  weaponSpeedInfo: {fileID: 0}
+  weaponDmgInfo: {fileID: 0}
+  weaponBulletInfo: {fileID: 0}
 --- !u!1 &442192786
 GameObject:
   m_ObjectHideFlags: 0
@@ -836,7 +836,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94d35d6aefc0cd14ab07b564a2a0efc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  focus: {fileID: 1573181156}
+  focus: {fileID: 0}
 --- !u!1 &613156518
 GameObject:
   m_ObjectHideFlags: 0
@@ -2222,7 +2222,7 @@ MonoBehaviour:
   nextLevelXP: 0
   level: 0
   allocatedLevels: 0
-  speed: 3
+  speed: 0
 --- !u!114 &1287927093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3025,7 +3025,7 @@ MonoBehaviour:
   linear: 0
   Player: {fileID: 1287927087}
   NumEnemies: 10
-  seed: 37
+  seed: 0
   levelNum: 0
 --- !u!4 &1952949847
 Transform:
