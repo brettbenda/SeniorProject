@@ -13,7 +13,7 @@ public class GameFlowManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-         state = "start_menu";
+        state = "start_menu";
         GameCamera.SetFocus(startMenu);
         statsMenu.SetActive(false);
     }
@@ -45,6 +45,7 @@ public class GameFlowManager : MonoBehaviour
             GameCamera.SetFocus(player.gameObject);
             GameCamera.Toggle();
             startMenu.SetActive(false);
+            statsMenu.SetActive(false);
             rm.CreateMap();
         }
         if (message == "start_menu")

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum ENEMY_TYPE
 {
-    SHOOTER, CHASER, BRUTE, SNIPER,  TURRET, NumberOfTypes 
+    SHOOTER, CHASER, BRUTE, SNIPER,  TURRET, NumberOfTypes, BOSS
 };
 
 public class EnemyBehavior : MonoBehaviour
@@ -82,6 +82,9 @@ public class EnemyBehavior : MonoBehaviour
                 break;
             case ENEMY_TYPE.TURRET:
                 TurretBehavior();
+                break;
+            case ENEMY_TYPE.BOSS:
+                BossBehavior();
                 break;
         }
     }
@@ -203,6 +206,39 @@ public class EnemyBehavior : MonoBehaviour
         }
     }
 
+    void BossBehavior()
+    {
+        if (!targeting)
+        {
+            CheckIfInRange();
+        }
+        else if (!dead)
+        {
+            facing = Target.transform.position - transform.position;
+            facing.Normalize();
+            if (timer < 2.0f)
+            {
+                weapon.Shoot();
+            }
+            else if (timer < 5.0f)
+            {
+                Chase();
+            }
+            else if (timer < 7.0f)
+            {
+                Stay();
+                weapon.Shoot();
+            }
+            else if (timer < 8.0f)
+            {
+                Avoid();
+            }
+            else if (timer > 9.0f)
+            {
+                timer = 0;
+            }
+        }
+    }
     //Enemy moves towards player
     void Chase()
     {
@@ -247,6 +283,9 @@ public class EnemyBehavior : MonoBehaviour
                 break;
             case ENEMY_TYPE.TURRET:
                 SetTurret();
+                break;
+            case ENEMY_TYPE.BOSS:
+                SetBoss();
                 break;
         }
     }
@@ -316,13 +355,13 @@ public class EnemyBehavior : MonoBehaviour
 
         hb.SetHealth(MaxHealth, CurrentHealth);
 
-        weapon.Set(0.33f * modifier, 0.2f * modifier, 7.0f * modifier, (int)(50 * modifier), 1, 0, 1);
+        weapon.Set(0.33f * modifier, 0.4f * modifier, 7.0f * modifier, (int)(50 * modifier), 1, 0, 1);
     }
 
     public void SetTurret()
     {
         type = ENEMY_TYPE.TURRET;
-        gameObject.transform.localScale = new Vector3(0.25f, 0.25f, 0);
+        gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0);
         targetingRange = 1000;
 
         MaxHealth = (int)(100 * modifier);
@@ -331,11 +370,42 @@ public class EnemyBehavior : MonoBehaviour
         touchDamage = (int)(10 * modifier);
 
         sr.color = Color.white;
+        sprite = Resources.Load<Sprite>("Turret");
+        sr.sprite = sprite;
+
+        collider.isTrigger = true;
 
         hb.SetHealth(MaxHealth, CurrentHealth);
 
         weapon.Set(3 , 0.5f * modifier, 3.0f * modifier, (int)(50 * modifier), 1, 0, 3);
     }
+
+    public void SetBoss()
+    {
+        type = ENEMY_TYPE.BOSS;
+        gameObject.transform.localScale = new Vector3(3f, 3f, 0);
+
+        MaxHealth = (int)(400 * modifier);
+        CurrentHealth = MaxHealth;
+        speed = 0.75f * modifier;
+        touchDamage = (int)(20 * modifier);
+        targetingRange = 5.0f;
+
+        float r = UnityEngine.Random.Range(0.5f, 1.0f);
+        float g = UnityEngine.Random.Range(0.5f, 1.0f);
+        float b = UnityEngine.Random.Range(0.5f, 1.0f);
+
+        sr.color = new Color(r,g,b);
+        sprite = Resources.Load<Sprite>("Boss");
+        sr.sprite = sprite;
+
+        hb.SetHealth(MaxHealth, CurrentHealth);
+
+        weapon.Set(2.5f * modifier, 0.2f * modifier, 4.0f * modifier, (int)(20 * modifier), 3, 30, 3);
+    }
+
+
+
 
     public void Hit(Bullet b)
     {

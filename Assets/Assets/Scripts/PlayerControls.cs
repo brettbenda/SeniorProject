@@ -25,6 +25,7 @@ public class PlayerControls : MonoBehaviour {
         active = true;
 
         weapon = this.gameObject.AddComponent<Weapon>();
+        weapon.Set(2f, 0.2f, 3.0f, 10, 1, 0, 2);
 
         hb = this.GetComponent<HealthBar>();
         MaxHealth = 100;
@@ -101,8 +102,19 @@ public class PlayerControls : MonoBehaviour {
     {
         if (!dead && timeSinceLastHit>1)
         {
-            CurrentHealth -= b.GetDamage();
-            hb.Hit(b.GetDamage());
+            float damage = b.GetDamage();
+            if (damage > CurrentHealth)
+            {
+               hb.Hit(CurrentHealth);
+                CurrentHealth = 0;
+            }
+            else {
+                
+                CurrentHealth -= b.GetDamage();
+                hb.Hit(b.GetDamage());         
+            }
+
+            
             timeSinceLastHit = 0;
         }
 

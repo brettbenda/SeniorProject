@@ -65,7 +65,7 @@ public class Room : MonoBehaviour {
                 }
                 else
                 {
-                    Tile = Instantiate(FloorPrefab, new Vector3(x, y, 0), Quaternion.identity);
+                    Tile = Instantiate(FloorPrefab, new Vector3(x, y, 1), Quaternion.identity);
                     Tile.transform.parent = Floors.transform;
                     FloorList.Add(Tile);
                 }

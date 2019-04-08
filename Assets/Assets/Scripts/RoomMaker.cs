@@ -21,7 +21,9 @@ public class RoomMaker : MonoBehaviour
     private List<GameObject> walls;
     private List<Room> rooms;
     private EndTile end;
-    private bool ended = false;
+    public bool ended = false;
+    public bool boss = false;
+    public EnemyBehavior bossEnemy;
 
     // Use this for initialization
     void Start()
@@ -50,7 +52,17 @@ public class RoomMaker : MonoBehaviour
         {
             if (end.Triggered())
             {
-                DestroyMap();
+                if (boss && bossEnemy == null)
+                {
+                    DestroyMap();
+                    ended = true;
+                }
+                else if (!boss)
+                {
+                    DestroyMap();
+                    BossMap();
+                    boss = true;
+                }
             }
         }
         
@@ -58,9 +70,16 @@ public class RoomMaker : MonoBehaviour
 
     public void CreateMap()
     {
-        levelNum++;
-        EnemyBehavior.IncrementLevel();
+        float r = UnityEngine.Random.Range(0.5f, 1.0f);
+        float g = UnityEngine.Random.Range(0.5f, 1.0f);
+        float b = UnityEngine.Random.Range(0.5f, 1.0f);
+        WallPrefab.GetComponent<SpriteRenderer>().color = new Color(r, g, b);
+        FloorPrefab.GetComponent<SpriteRenderer>().color = new Color(r, g, b);
 
+        levelNum++;
+        
+        EnemyBehavior.IncrementLevel();
+        boss = false;
         ended = false;
         Player.SetActive(true);
         WallPrefab.SetActive(true);
@@ -75,6 +94,42 @@ public class RoomMaker : MonoBehaviour
         DetermineBestStartEndPoints();
 
         AddEnemies();
+
+        WallPrefab.SetActive(false);
+        FloorPrefab.SetActive(false);
+    }
+
+    public void BossMap()
+    {
+        Player.SetActive(true);
+        WallPrefab.SetActive(true);
+        FloorPrefab.SetActive(true);
+        Player.SetActive(true);
+
+        int StartX = (int)Player.transform.position.x;
+        int StartY = (int)Player.transform.position.y;
+
+
+        rooms = new List<Room>();
+        GameObject Room = new GameObject();
+        Room r = Room.AddComponent<Room>();
+        rooms.Add(r);
+
+        int Width = 15;
+        int Height = 15;
+        r.Initialize("Boss", Width, Height, StartX, StartY, WallPrefab, FloorPrefab);
+        Room.transform.parent = RoomGroup.transform;
+
+        RemoveOverlap();
+        DetermineBestStartEndPoints();
+
+
+        GameObject enemy = new GameObject("Enemy");
+        enemy.transform.position = GameObject.Find("Player").transform.position + new Vector3(7.5f, 7.5f,0) ;
+        enemy.AddComponent<HealthBar>();
+        bossEnemy = enemy.AddComponent<EnemyBehavior>();
+        bossEnemy.SetType(ENEMY_TYPE.BOSS);
+        bossEnemy.SetTarget(GameObject.Find("Player"));
 
         WallPrefab.SetActive(false);
         FloorPrefab.SetActive(false);
@@ -98,7 +153,6 @@ public class RoomMaker : MonoBehaviour
         GameObject.Find("[HitManager]").GetComponent<HitManager>().Clear();
         RoomGroup = new GameObject("Rooms");
         Player.SetActive(false);
-        ended = true;
     }
 
 
@@ -148,6 +202,11 @@ public class RoomMaker : MonoBehaviour
             }
         }
 
+        if(RoomGroup.transform.childCount == 1)
+        {
+            BestStartRoom = RoomGroup.transform.GetChild(0).GetComponent<Room>();
+            BestEndRoom = RoomGroup.transform.GetChild(0).GetComponent<Room>();
+        }
 
         GameObject BestStart = null ;
         GameObject BestEnd = null;
