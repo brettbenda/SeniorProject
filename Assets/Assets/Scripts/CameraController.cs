@@ -39,5 +39,7 @@ public class CameraController : MonoBehaviour {
     public void SetFocus(GameObject focus) {
         this.focus = focus;
         this.GetComponent<Camera>().orthographicSize = 4.0f;
+        Vector3 pos = new Vector3(focus.transform.position.x, focus.transform.position.y, -10);
+        this.transform.position = pos;
     }
 }

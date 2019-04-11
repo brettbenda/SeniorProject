@@ -7,15 +7,17 @@ public class GameFlowManager : MonoBehaviour
     public RoomMaker rm;
     public GameObject startMenu;
     public GameObject statsMenu;
+    public GameObject settingsMenu;
     public PlayerControls player;
     public CameraController GameCamera;
-    private string state;
+    public string state;
     // Start is called before the first frame update
     void Start()
     {
         state = "start_menu";
         GameCamera.SetFocus(startMenu);
         statsMenu.SetActive(false);
+        settingsMenu.SetActive(false);
     }
 
     // Update is called once per frame
@@ -46,6 +48,7 @@ public class GameFlowManager : MonoBehaviour
             GameCamera.Toggle();
             startMenu.SetActive(false);
             statsMenu.SetActive(false);
+            settingsMenu.SetActive(false);
             rm.CreateMap();
         }
         if (message == "start_menu")
@@ -54,6 +57,7 @@ public class GameFlowManager : MonoBehaviour
             GameCamera.SetFocus(startMenu);
             startMenu.SetActive(true);
             statsMenu.SetActive(false);
+            settingsMenu.SetActive(false);
         }
         if (message == "stats_menu")
         {
@@ -61,6 +65,17 @@ public class GameFlowManager : MonoBehaviour
             GameCamera.SetFocus(statsMenu);
             startMenu.SetActive(false);
             statsMenu.SetActive(true);
+            settingsMenu.SetActive(false);
+        }
+        if (message == "settings_menu")
+        {
+            Debug.Log("!");
+            state = "settings_menu";
+            GameCamera.Toggle();
+            GameCamera.SetFocus(settingsMenu);
+            startMenu.SetActive(false);
+            statsMenu.SetActive(false);
+            settingsMenu.SetActive(true);
         }
     }
 }

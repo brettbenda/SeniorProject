@@ -44,7 +44,7 @@ public class Bullet : MonoBehaviour
         rb = gameObject.AddComponent<Rigidbody2D>();
         rb.gravityScale = 0;
         rb.freezeRotation = true;
-        rb.velocity = tragectory + parent.GetComponent<Rigidbody2D>().velocity;
+        rb.velocity = tragectory;// + parent.GetComponent<Rigidbody2D>().velocity;
 
         this.damage = damage;
     }

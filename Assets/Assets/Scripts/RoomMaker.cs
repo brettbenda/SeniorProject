@@ -159,6 +159,7 @@ public class RoomMaker : MonoBehaviour
     //Generation methods
     private void AddEnemies()
     {
+        int tries = 0;
         for(int i = 0; i<NumEnemies; i++)
         {
             int rand = UnityEngine.Random.Range(0, tiles.Count);
@@ -177,6 +178,9 @@ public class RoomMaker : MonoBehaviour
             {
                 i--;
             }
+            tries++;
+            if (tries > 3 * NumEnemies)
+                break;
         }
     }
 
@@ -354,4 +358,29 @@ public class RoomMaker : MonoBehaviour
 
     public bool IsOver() { return ended; }
 
+
+    public void AddSize(int i)
+    {
+        MaxRoomWidth += i;
+        MaxRoomHeight += i;
+
+        MaxRoomWidth = (MaxRoomWidth > 5) ? MaxRoomWidth : 5;
+        MaxRoomHeight = (MaxRoomHeight > 5) ? MaxRoomHeight : 5;
+    }
+    public void AddRoom(int i)
+    {
+        NumRooms += i;
+
+        NumRooms = (NumRooms > 0) ? NumRooms : 0;
+    }
+    public void AddEnemy(int i)
+    {
+        NumEnemies += i;
+
+        NumEnemies = (NumEnemies > 0) ? NumEnemies : 0;
+    }
+    public void ToggleType()
+    {
+        linear = !linear;
+    }
 }
