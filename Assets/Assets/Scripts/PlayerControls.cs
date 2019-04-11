@@ -41,6 +41,28 @@ public class PlayerControls : MonoBehaviour {
         man.SetPlayer(this.gameObject);
     }
 
+    public void reset()
+    {
+        rb = this.GetComponent<Rigidbody2D>();
+        active = true;
+
+        weapon = this.gameObject.AddComponent<Weapon>();
+        weapon.Set(2f, 0.2f, 3.0f, 10, 1, 0, 2);
+
+        hb = this.GetComponent<HealthBar>();
+        MaxHealth = 100;
+        CurrentHealth = 100;
+        dead = false;
+        hb.SetHealth(MaxHealth, CurrentHealth);
+        speed = 1.5f;
+
+        experience = 0;
+        nextLevelXP = 500;
+
+        HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
+        man.SetPlayer(this.gameObject);
+    }
+
     // Update is called once per frame
     void Update() {
         timeSinceLastHit += Time.deltaTime;
@@ -198,5 +220,10 @@ public class PlayerControls : MonoBehaviour {
             weapon.n++;
             
         }
+    }
+
+    public bool isDead()
+    {
+        return (CurrentHealth <= 0);
     }
 }

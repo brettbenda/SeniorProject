@@ -8,6 +8,7 @@ public class GameFlowManager : MonoBehaviour
     public GameObject startMenu;
     public GameObject statsMenu;
     public GameObject settingsMenu;
+    public GameObject deathMenu;
     public PlayerControls player;
     public CameraController GameCamera;
     public string state;
@@ -18,6 +19,8 @@ public class GameFlowManager : MonoBehaviour
         GameCamera.SetFocus(startMenu);
         statsMenu.SetActive(false);
         settingsMenu.SetActive(false);
+        deathMenu.SetActive(false);
+
     }
 
     // Update is called once per frame
@@ -27,6 +30,10 @@ public class GameFlowManager : MonoBehaviour
         {
             if (rm.IsOver()){
                 ProcessInput("stats_menu");
+            }
+            if (player.isDead())
+            {
+                ProcessInput("death_menu");
             }
         }
         else
@@ -49,6 +56,7 @@ public class GameFlowManager : MonoBehaviour
             startMenu.SetActive(false);
             statsMenu.SetActive(false);
             settingsMenu.SetActive(false);
+            deathMenu.SetActive(false);
             rm.CreateMap();
         }
         if (message == "start_menu")
@@ -58,6 +66,7 @@ public class GameFlowManager : MonoBehaviour
             startMenu.SetActive(true);
             statsMenu.SetActive(false);
             settingsMenu.SetActive(false);
+            deathMenu.SetActive(false);
         }
         if (message == "stats_menu")
         {
@@ -66,16 +75,27 @@ public class GameFlowManager : MonoBehaviour
             startMenu.SetActive(false);
             statsMenu.SetActive(true);
             settingsMenu.SetActive(false);
+            deathMenu.SetActive(false);
         }
         if (message == "settings_menu")
         {
-            Debug.Log("!");
             state = "settings_menu";
             GameCamera.Toggle();
             GameCamera.SetFocus(settingsMenu);
             startMenu.SetActive(false);
             statsMenu.SetActive(false);
             settingsMenu.SetActive(true);
+            deathMenu.SetActive(false);
+        }
+        if(message == "death_menu")
+        {
+            state = "death_menu";
+            GameCamera.SetFocus(deathMenu);
+            startMenu.SetActive(false);
+            statsMenu.SetActive(false);
+            settingsMenu.SetActive(false);
+            deathMenu.SetActive(true);
+            player.reset();
         }
     }
 }

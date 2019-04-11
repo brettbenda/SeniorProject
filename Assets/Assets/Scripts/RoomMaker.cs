@@ -65,6 +65,15 @@ public class RoomMaker : MonoBehaviour
                 }
             }
         }
+
+        if (Player.GetComponent<PlayerControls>().isDead())
+        {
+            DestroyMap();
+            ended = false;
+            boss = false;
+        }
+            
+        
         
     }
 
