@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerControls : MonoBehaviour {
@@ -17,28 +18,13 @@ public class PlayerControls : MonoBehaviour {
     public int nextLevelXP;
     public int level;
     public int allocatedLevels;
+    public TextMeshPro text;
+    private float textTimer;
 
     public float speed;
 	// Use this for initialization
 	void Start () {
-        rb = this.GetComponent<Rigidbody2D>();
-        active = true;
-
-        weapon = this.gameObject.AddComponent<Weapon>();
-        weapon.Set(2f, 0.2f, 3.0f, 10, 1, 0, 2);
-
-        hb = this.GetComponent<HealthBar>();
-        MaxHealth = 100;
-        CurrentHealth = 100;
-        dead = false;
-        hb.SetHealth(MaxHealth, CurrentHealth);
-        speed = 1.5f;
-
-        experience = 0;
-        nextLevelXP = 500;
-
-        HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
-        man.SetPlayer(this.gameObject);
+        reset();
     }
 
     public void reset()
@@ -61,10 +47,13 @@ public class PlayerControls : MonoBehaviour {
 
         HitManager man = GameObject.Find("[HitManager]").GetComponent<HitManager>();
         man.SetPlayer(this.gameObject);
+        text.text = "";
+        textTimer = 0;
     }
 
     // Update is called once per frame
     void Update() {
+        textTimer += Time.deltaTime;
         timeSinceLastHit += Time.deltaTime;
         if (active)
         {
@@ -105,7 +94,14 @@ public class PlayerControls : MonoBehaviour {
             if(experience >= nextLevelXP)
             {
                 LevelUp();
+                textTimer = 0;
+                text.text = "Level Up!";
             }
+        }
+
+        if (textTimer >= 3.0f)
+        {
+            text.text = "";
         }
 
         Debug.DrawRay(this.transform.position, facing);

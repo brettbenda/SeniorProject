@@ -19,6 +19,7 @@ public class EnemyBehavior : MonoBehaviour
 
     private Rigidbody2D rb;
     private Weapon weapon;
+    private Weapon weapon2;
     private HealthBar hb;
     private SpriteRenderer sr;
     private Sprite sprite;
@@ -33,6 +34,8 @@ public class EnemyBehavior : MonoBehaviour
     private float speed;
     private int touchDamage;
     public float timer;
+    public int state = 0;
+    public float timerUp = 1.0f;
 
     // Start is called before the first frame update
     void Awake()
@@ -58,7 +61,8 @@ public class EnemyBehavior : MonoBehaviour
 
         hb = gameObject.GetComponent<HealthBar>();
         weapon = this.gameObject.AddComponent<Weapon>();
-        modifier = 1.0f + Random.Range(-levelNum / 10.0f, levelNum / 10.0f);
+        weapon2 = this.gameObject.AddComponent<Weapon>();
+        modifier = 1.0f + Random.Range(-levelNum / 5.0f, levelNum / 5.0f);
 
     }
 
@@ -214,8 +218,49 @@ public class EnemyBehavior : MonoBehaviour
         }
         else if (!dead)
         {
+
             facing = Target.transform.position - transform.position;
             facing.Normalize();
+
+            switch (state)
+            {
+                case 0:
+                    timerUp = 3.0f;
+                    Stay();
+                    weapon.Shoot();
+                    break;
+                case 1:
+                    timerUp = 3.0f;
+                    Stay();
+                    weapon2.Shoot();
+                    break;
+                case 2:
+                    timerUp = 2.0f;
+                    Chase();
+                    break;
+                case 3:
+                    timerUp = 1.0f;
+                    Avoid();
+                    break;
+                case 4:
+                    timerUp = 3.0f;
+                    Chase();
+                    weapon.Shoot();
+                    break;
+                case 5:
+                    timerUp = 3.0f;
+                    Chase();
+                    weapon2.Shoot();
+                    break;
+            }
+
+            if(timer >= timerUp)
+            {
+                state = Random.Range(0, 6);
+                timer = 0;
+            }
+
+            /*
             if (timer < 2.0f)
             {
                 weapon.Shoot();
@@ -227,16 +272,17 @@ public class EnemyBehavior : MonoBehaviour
             else if (timer < 7.0f)
             {
                 Stay();
-                weapon.Shoot();
+                weapon2.Shoot();
             }
             else if (timer < 8.0f)
             {
                 Avoid();
             }
-            else if (timer > 9.0f)
+            else if (timer > 8.0f)
             {
+                Stay();
                 timer = 0;
-            }
+            }*/
         }
     }
     //Enemy moves towards player
@@ -337,7 +383,7 @@ public class EnemyBehavior : MonoBehaviour
 
         hb.SetHealth(MaxHealth, CurrentHealth);
 
-        weapon.Set(1f * modifier, 0.5f * modifier, 2.0f * modifier, (int)(50 * modifier), 1, 0, 1);
+        weapon.Set(1f * modifier, 0.5f * modifier, 2.0f * modifier, (int)(50 * modifier), 1, 0, 3);
     }
 
     public void SetSniper()
@@ -355,7 +401,7 @@ public class EnemyBehavior : MonoBehaviour
 
         hb.SetHealth(MaxHealth, CurrentHealth);
 
-        weapon.Set(0.33f * modifier, 0.4f * modifier, 7.0f * modifier, (int)(50 * modifier), 1, 0, 1);
+        weapon.Set(0.33f * modifier, 0.7f * modifier, 3.0f * modifier, (int)(50 * modifier), 1, 0, 1);
     }
 
     public void SetTurret()
@@ -401,7 +447,8 @@ public class EnemyBehavior : MonoBehaviour
 
         hb.SetHealth(MaxHealth, CurrentHealth);
 
-        weapon.Set(2.5f * modifier, 0.2f * modifier, 4.0f * modifier, (int)(20 * modifier), 3, 30, 3);
+        weapon.Set(2.5f * modifier, 0.1f * modifier, 4.0f * modifier, (int)(20 * modifier), 3, 45, 3);
+        weapon2.Set(4f * modifier, 0.1f * modifier, 5.0f * modifier, (int)(20 * modifier), 1, 0, 3);
     }
 
 
