@@ -11,6 +11,7 @@ public class GameFlowManager : MonoBehaviour
     public GameObject deathMenu;
     public PlayerControls player;
     public CameraController GameCamera;
+    public HitManager hm;
     public string state;
     // Start is called before the first frame update
     void Start()
@@ -33,6 +34,7 @@ public class GameFlowManager : MonoBehaviour
             }
             if (player.isDead())
             {
+                hm.Clear();
                 ProcessInput("death_menu");
             }
         }

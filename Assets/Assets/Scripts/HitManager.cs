@@ -20,6 +20,7 @@ public class HitManager : MonoBehaviour
 
         weapons = new List<Weapon>();
         weapons.Add(player.GetComponent<Weapon>());
+        player.GetComponent<Weapon>().GetBullets().Clear();
     }
     // Start is called before the first frame update
     void Start()
@@ -58,7 +59,11 @@ public class HitManager : MonoBehaviour
                             weapons.Remove(e.GetComponent<Weapon>());
                             enemies.Remove(e);
                             player.GetComponent<PlayerControls>().AwardExperience(e.GetComponent<EnemyBehavior>().MaxHealth);
-                            Destroy(e.GetComponent<Weapon>());
+                            Weapon[] weps = e.GetComponents<Weapon>();
+                            for(int i = 0; i<weps.Length; i++)
+                            {
+                                Destroy(weps[i]);
+                            }
                             Destroy(e);
 
                             break;
@@ -140,4 +145,5 @@ public class HitManager : MonoBehaviour
     }
 
     public void SetWalls(List<GameObject> walls) { this.walls = walls; }
+
 }
